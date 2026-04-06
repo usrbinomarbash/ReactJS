@@ -1,0 +1,151 @@
+{
+	"folders": [
+		{
+			"path": "../../../../../Axios"
+		},
+		{
+			"path": "../../../../../BasicsOfCreaRea"
+		},
+		{
+			"path": "../../../../../BEM"
+		},
+		{
+			"path": "../../../../../Buttons"
+		},
+		{
+			"path": "../../../../../Changing_The_State_Using_This"
+		},
+		{
+			"path": "../../../../../Components"
+		},
+		{
+			"path": "../../../../../Conditional_Output"
+		},
+		{
+			"path": "../../../../../ContextAPI"
+		},
+		{
+			"path": "../../../../../Cool Color Gradients"
+		},
+		{
+			"path": "../../../../../CSS_Files"
+		},
+		{
+			"path": "../../../../../Data Handling"
+		},
+		{
+			"path": "../../../../../Deployment"
+		},
+		{
+			"path": "../../../../../DOM_Events"
+		},
+		{
+			"path": "../../../../../Forms"
+		},
+		{
+			"path": "../../../../../FormsPII"
+		},
+		{
+			"path": "../../../../../Functions"
+		},
+		{
+			"path": "../../../../../FunctonsAsProps"
+		},
+		{
+			"path": "../../../../../Higher_Order_Comp"
+		},
+		{
+			"path": "../../../../../Hooks"
+		},
+		{
+			"path": "../../../../../Hosting"
+		},
+		{
+			"path": "../../../../../HowTosInReact"
+		},
+		{
+			"path": "../../../../../HTML_Tags"
+		},
+		{
+			"path": "../../../../../Image_Imports"
+		},
+		{
+			"path": "../../../../../Jest"
+		},
+		{
+			"path": "../../../../../Keyframes"
+		},
+		{
+			"path": "../../../../../Lifecycle_Methods"
+		},
+		{
+			"path": "../../../../../Links_Navlinks"
+		},
+		{
+			"path": "../../../../../List_Outp"
+		},
+		{
+			"path": "../../../../../Lodash"
+		},
+		{
+			"path": "../../../../../MaterialUI"
+		},
+		{
+			"path": "../../../../../Practical_Stuff"
+		},
+		{
+			"path": "../../../.."
+		},
+		{
+			"path": "../../../../../Props"
+		},
+		{
+			"path": "../../../../../React_Admin"
+		},
+		{
+			"path": "../../../../../React_App_Demo"
+		},
+		{
+			"path": "../../../../../React-Router"
+		},
+		{
+			"path": "../../../../../ReactSetupWCDN"
+		},
+		{
+			"path": "../../../../../Redirects"
+		},
+		{
+			"path": "../../../../../Redux"
+		},
+		{
+			"path": "../../../../../Rendering_Elements"
+		},
+		{
+			"path": "../../../../../Requests"
+		},
+		{
+			"path": "../../../../../Roadmap"
+		},
+		{
+			"path": "../../../../../Route-Params"
+		},
+		{
+			"path": "../../../../../Session & Local Storage"
+		},
+		{
+			"path": "../../../../../Shorthand Notation"
+		},
+		{
+			"path": "../../../../../State"
+		},
+		{
+			"path": "../../../../../Stateless_Components"
+		},
+		{
+			"path": "../../../../../Switch_In_React"
+		}
+	],
+	"settings": {
+		"java.configuration.updateBuildConfiguration": "interactive"
+	}
+}
