@@ -34,14 +34,12 @@ public class Category{
         this.name = name;
     }
 
-    public Object getDescription() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getDescription'");
+    public String getDescription() {
+        return null;
     }
 
-    public void setDescription(Object description) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setDescription'");
+    public void setDescription(String description) {
+        // description field not stored
     }
 
 }

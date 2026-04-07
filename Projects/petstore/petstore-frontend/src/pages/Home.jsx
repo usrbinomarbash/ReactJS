@@ -1,6 +1,7 @@
 import React from "react";
 import { Box, Typography, Button, Grid, Paper } from "@mui/material";
 import { Link } from "react-router-dom";
+import Typewriter from "../components/Typewriter";
 import PetsIcon from "@mui/icons-material/Pets";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
@@ -91,7 +92,7 @@ export default function Home() {
               textShadow: "2px 2px 8px rgba(0,0,0,0.7)",
             }}
           >
-            Welcome to PetStore 🐾
+            <Typewriter text="Welcome to PetStore 🐾" speed={60} />
           </Typography>
 
           <Typography
@@ -101,7 +102,7 @@ export default function Home() {
               textShadow: "1px 1px 4px rgba(0,0,0,0.7)",
             }}
           >
-            Your one-stop shop for pets, care, grooming, and premium products
+            <Typewriter text="Your one-stop shop for pets, care, grooming, and premium products" speed={25} delay={1200} />
           </Typography>
 
           <Button
@@ -134,7 +135,7 @@ export default function Home() {
             color: "#333",
           }}
         >
-          Explore Our Services
+          <Typewriter text="Explore Our Services" speed={50} delay={2800} />
         </Typography>
         <Typography
           variant="body1"

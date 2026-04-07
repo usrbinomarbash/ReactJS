@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Typewriter from "../components/Typewriter";
 import api from "../api/api";
 import {
   Box,
@@ -51,6 +52,7 @@ export default function Dashboard() {
   const [petsPerCustomer, setPetsPerCustomer] = useState([]);
   const [productsPerCategory, setProductsPerCategory] = useState([]);
   const [ordersPerCustomer, setOrdersPerCustomer] = useState([]);
+  const [pricePerCustomer, setPricePerCustomer] = useState([]);
   const [lowStockProducts, setLowStockProducts] = useState([]);
 
   const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884D8", "#82CA9D"];
@@ -91,14 +93,16 @@ export default function Dashboard() {
 
       // Fetch report data
       try {
-        const [petsPerCustRes, prodsPerCatRes, ordersPerCustRes] = await Promise.all([
+        const [petsPerCustRes, prodsPerCatRes, ordersPerCustRes, pricePerCustRes] = await Promise.all([
           api.get("/reports/pets-per-customer"),
           api.get("/reports/products-per-category"),
-          api.get("/reports/orders-per-customer")
+          api.get("/reports/orders-per-customer"),
+          api.get("/reports/price-per-customer")
         ]);
         setPetsPerCustomer(petsPerCustRes.data.slice(0, 6));
         setProductsPerCategory(prodsPerCatRes.data);
         setOrdersPerCustomer(ordersPerCustRes.data.slice(0, 6));
+        setPricePerCustomer(pricePerCustRes.data.slice(0, 6));
       } catch (e) {
         console.log("Reports not available:", e);
       }
@@ -154,7 +158,7 @@ export default function Dashboard() {
   return (
     <Box sx={{ p: 3 }}>
       <Typography variant="h4" sx={{ mb: 3, fontWeight: "bold" }}>
-        📊 Dashboard
+        <Typewriter text="📊 Dashboard" />
       </Typography>
 
       {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
@@ -271,6 +275,26 @@ export default function Dashboard() {
                 </Pie>
                 <Tooltip />
               </PieChart>
+            </ResponsiveContainer>
+          </Paper>
+        </Grid>
+      </Grid>
+
+      {/* Price per Customer */}
+      <Grid container spacing={3} sx={{ mb: 4 }}>
+        <Grid item xs={12}>
+          <Paper sx={{ p: 2, borderRadius: 2 }}>
+            <Typography variant="h6" sx={{ mb: 2, fontWeight: "bold" }}>
+              💰 Price per Customer (Total Spent)
+            </Typography>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={pricePerCustomer}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="customerName" tick={{ fontSize: 12 }} />
+                <YAxis />
+                <Tooltip formatter={(value) => [`${value} MAD`, "Total Spent"]} />
+                <Bar dataKey="totalSpent" fill="#FF8042" name="Total Spent" />
+              </BarChart>
             </ResponsiveContainer>
           </Paper>
         </Grid>

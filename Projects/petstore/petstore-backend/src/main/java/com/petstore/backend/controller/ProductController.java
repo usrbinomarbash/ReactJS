@@ -38,6 +38,12 @@ public class ProductController {
         return "Product with id: "+id+" has been deleted successfully";
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product product) {
+        Product updated = productService.updateProduct(id, product);
+        return ResponseEntity.ok(updated);
+    }
+
     @GetMapping("/search")
     public ResponseEntity<List<Product>> searchProducts(
         @RequestParam(required = false) String name,
@@ -47,5 +53,5 @@ public class ProductController {
         return ResponseEntity.ok(results);
     }
 
-    
+
 }

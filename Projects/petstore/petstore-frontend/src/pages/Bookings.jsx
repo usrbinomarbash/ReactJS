@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Typewriter from "../components/Typewriter";
 import api from "../api/api";
 import {
   Box,
@@ -168,7 +169,7 @@ export default function Bookings() {
   return (
     <Box sx={{ padding: "2rem" }}>
       <Typography variant="h4" sx={{ mb: 3, fontWeight: "bold" }}>
-        🗓️ Manage Bookings
+        <Typewriter text="🗓️ Manage Bookings" />
       </Typography>
 
       <Box sx={{ display: "flex", gap: 2, mb: 3 }}>

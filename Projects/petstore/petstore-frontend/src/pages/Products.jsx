@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import api from "../api/api";
+import Typewriter from "../components/Typewriter";
 import {
   Grid,
   Typography,
@@ -194,7 +195,7 @@ export default function Products() {
     <Box sx={{ p: 3 }}>
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
         <Typography variant="h4" sx={{ fontWeight: "bold" }}>
-          🛍️ Products
+          <Typewriter text="🛍️ Products" />
         </Typography>
         <Button
           variant="contained"

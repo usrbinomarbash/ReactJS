@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import api from "../api/api";
+import Typewriter from "../components/Typewriter";
 import {
   Paper,
   Table,
@@ -167,7 +168,7 @@ export default function Pets() {
   return (
     <Box sx={{ padding: "2rem" }}>
       <Typography variant="h4" sx={{ mb: 3, fontWeight: "bold" }}>
-        🐾 Pets
+        <Typewriter text="🐾 Pets" />
       </Typography>
 
       {error && <Alert severity="error">{error}</Alert>}

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Typewriter from "../components/Typewriter";
 import {
   Box,
   Grid,
@@ -98,7 +99,7 @@ export default function Services() {
         <Container maxWidth="md">
           <PetsIcon sx={{ fontSize: 60, mb: 2, opacity: 0.9 }} />
           <Typography variant="h3" sx={{ fontWeight: "bold", mb: 2 }}>
-            Our Pet Services
+            <Typewriter text="Our Pet Services" />
           </Typography>
           <Typography variant="h6" sx={{ opacity: 0.9, maxWidth: 600, mx: "auto" }}>
             Professional care for all your beloved pets. From grooming to health services,

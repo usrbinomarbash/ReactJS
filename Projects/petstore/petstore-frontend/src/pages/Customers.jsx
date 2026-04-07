@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Typewriter from "../components/Typewriter";
 import api from "../api/api";
 import {
   Paper,
@@ -21,9 +22,11 @@ import {
   FormControl,
   InputLabel
 } from "@mui/material";
-import { Add, Edit, Delete, Search } from "@mui/icons-material";
+import { Add, Edit, Delete, Search, Visibility } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 
 export default function Customers() {
+  const navigate = useNavigate();
   const [customers, setCustomers] = useState([]);
   const [filteredCustomers, setFilteredCustomers] = useState([]);
   const [open, setOpen] = useState(false);
@@ -155,7 +158,7 @@ export default function Customers() {
   return (
     <Box sx={{ padding: "2rem" }}>
       <Typography variant="h4" sx={{ mb: 3, fontWeight: "bold" }}>
-        👥 Customers
+        <Typewriter text="👥 Customers" />
       </Typography>
 
       {/* Search Bar */}
@@ -242,6 +245,9 @@ export default function Customers() {
                   <TableCell>{c.address || "N/A"}</TableCell>
                   <TableCell>{c.email || "N/A"}</TableCell>
                   <TableCell>
+                    <IconButton color="info" onClick={() => navigate(`/customers/${c.customerId}`)}>
+                      <Visibility />
+                    </IconButton>
                     <IconButton color="primary" onClick={() => handleOpen(c)}>
                       <Edit />
                     </IconButton>

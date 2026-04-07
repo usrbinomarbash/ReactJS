@@ -40,6 +40,7 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import PeopleIcon from "@mui/icons-material/People";
 import EventIcon from "@mui/icons-material/Event";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 
 // Color palettes
 const COLORS = {
@@ -126,7 +127,10 @@ export default function Reports() {
   const [productsPerCategory, setProductsPerCategory] = useState([]);
   const [productsPerVendor, setProductsPerVendor] = useState([]);
   const [ordersPerCustomer, setOrdersPerCustomer] = useState([]);
+  const [pricePerCustomer, setPricePerCustomer] = useState([]);
   const [bookingDetails, setBookingDetails] = useState([]);
+  const [monthlyRevenue, setMonthlyRevenue] = useState([]);
+  const [dailyRevenue, setDailyRevenue] = useState([]);
 
   useEffect(() => {
     fetchAllReportData();
@@ -136,7 +140,7 @@ export default function Reports() {
     setLoading(true);
     setError("");
     try {
-      const [petsOwnersRes, petsCountRes, catalogRes, topProductsRes, categoryCountRes, vendorCountRes, orderCountRes, bookingDetailsRes] = await Promise.all([
+      const [petsOwnersRes, petsCountRes, catalogRes, topProductsRes, categoryCountRes, vendorCountRes, orderCountRes, pricePerCustRes, bookingDetailsRes, monthlyRes, dailyRes] = await Promise.all([
         api.get("/reports/pets-with-owners").catch(() => ({ data: [] })),
         api.get("/reports/pets-per-customer").catch(() => ({ data: [] })),
         api.get("/reports/product-catalog").catch(() => ({ data: [] })),
@@ -144,7 +148,10 @@ export default function Reports() {
         api.get("/reports/products-per-category").catch(() => ({ data: [] })),
         api.get("/reports/products-per-vendor").catch(() => ({ data: [] })),
         api.get("/reports/orders-per-customer").catch(() => ({ data: [] })),
+        api.get("/reports/price-per-customer").catch(() => ({ data: [] })),
         api.get("/reports/booking-details").catch(() => ({ data: [] })),
+        api.get("/reports/revenue/monthly").catch(() => ({ data: [] })),
+        api.get("/reports/revenue/daily").catch(() => ({ data: [] })),
       ]);
 
       setPetsWithOwners(petsOwnersRes.data);
@@ -154,7 +161,11 @@ export default function Reports() {
       setProductsPerCategory(categoryCountRes.data);
       setProductsPerVendor(vendorCountRes.data);
       setOrdersPerCustomer(orderCountRes.data);
+      const priceData = pricePerCustRes.data;
+      setPricePerCustomer(priceData);
       setBookingDetails(bookingDetailsRes.data);
+      setMonthlyRevenue(monthlyRes.data);
+      setDailyRevenue(dailyRes.data);
     } catch (err) {
       console.error("Error fetching report data:", err);
       setError("Failed to load some report data.");
@@ -177,7 +188,7 @@ export default function Reports() {
       {/* Header */}
       <Box sx={{ mb: 4 }}>
         <Typography variant="h3" sx={{ fontWeight: 800, background: "linear-gradient(135deg, #6366f1 0%, #a855f7 100%)", backgroundClip: "text", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", mb: 1 }}>
-          📊 Analytics & Reports
+          <Typewriter text="📊 Analytics & Reports" />
         </Typography>
         <Typography variant="body1" sx={{ color: "#64748b" }}>Insights from JOIN queries showing table relationships</Typography>
       </Box>
@@ -200,14 +211,16 @@ export default function Reports() {
           <Tab icon={<CategoryIcon />} iconPosition="start" label="Products & Categories" />
           <Tab icon={<ShoppingCartIcon />} iconPosition="start" label="Sales & Orders" />
           <Tab icon={<EventIcon />} iconPosition="start" label="Bookings" />
+          <Tab icon={<AttachMoneyIcon />} iconPosition="start" label="Revenue" />
         </Tabs>
       </Paper>
 
       {/* Tab Content */}
       {activeTab === 0 && <PetsOwnersTab petsWithOwners={petsWithOwners} petsPerCustomer={petsPerCustomer} />}
       {activeTab === 1 && <ProductsCategoriesTab productCatalog={productCatalog} productsPerCategory={productsPerCategory} productsPerVendor={productsPerVendor} />}
-      {activeTab === 2 && <SalesOrdersTab topSellingProducts={topSellingProducts} ordersPerCustomer={ordersPerCustomer} />}
+      {activeTab === 2 && <SalesOrdersTab topSellingProducts={topSellingProducts} ordersPerCustomer={ordersPerCustomer} pricePerCustomer={pricePerCustomer} />}
       {activeTab === 3 && <BookingsTab bookingDetails={bookingDetails} />}
+      {activeTab === 4 && <RevenueTab monthlyRevenue={monthlyRevenue} dailyRevenue={dailyRevenue} />}
     </Box>
   );
 }
@@ -375,7 +388,7 @@ function ProductsCategoriesTab({ productCatalog, productsPerCategory, productsPe
   );
 }
 
-function SalesOrdersTab({ topSellingProducts, ordersPerCustomer }) {
+function SalesOrdersTab({ topSellingProducts, ordersPerCustomer, pricePerCustomer }) {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12} md={6}>
@@ -456,6 +469,113 @@ function SalesOrdersTab({ topSellingProducts, ordersPerCustomer }) {
               </Table>
             </TableContainer>
           ) : <EmptyState message="No customer order data" />}
+        </Paper>
+      </Grid>
+
+      <Grid item xs={12}>
+        <Paper sx={{ p: 3, borderRadius: 3, height: "100%" }}>
+          <SectionHeader icon={<AttachMoneyIcon />} title="Price per Customer (Total Spent)" subtitle="Customer → Orders (LEFT JOIN + SUM)" color="#f59e0b" />
+          {pricePerCustomer.length > 0 ? (
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={pricePerCustomer.slice(0, 10)} layout="vertical">
+                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                <XAxis type="number" stroke="#64748b" tickFormatter={(v) => `${v} MAD`} />
+                <YAxis type="category" dataKey="customerName" width={130} stroke="#64748b" tick={{ fontSize: 12 }} />
+                <Tooltip content={<CustomTooltip />} formatter={(v) => [`${v} MAD`, "Total Spent"]} />
+                <Bar dataKey="totalSpent" name="Total Spent" radius={[0, 8, 8, 0]}>
+                  {pricePerCustomer.slice(0, 10).map((_, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS.warm[index % COLORS.warm.length]} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          ) : <EmptyState message="No spending data" />}
+        </Paper>
+      </Grid>
+    </Grid>
+  );
+}
+
+function RevenueTab({ monthlyRevenue, dailyRevenue }) {
+  const totalRevenue = monthlyRevenue.reduce((s, m) => s + Number(m.revenue || 0), 0);
+  const totalOrders = monthlyRevenue.reduce((s, m) => s + Number(m.order_count || 0), 0);
+  const latestAvg = monthlyRevenue[0]?.avg_order_value ?? 0;
+
+  return (
+    <Grid container spacing={3}>
+      <Grid item xs={12} md={7}>
+        <Paper sx={{ p: 3, borderRadius: 3 }}>
+          <SectionHeader icon={<TrendingUpIcon />} title="Monthly Revenue" subtitle="Total revenue per month" color="#10b981" />
+          {monthlyRevenue.length > 0 ? (
+            <ResponsiveContainer width="100%" height={300}>
+              <AreaChart data={[...monthlyRevenue].reverse()}>
+                <defs>
+                  <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.8} />
+                    <stop offset="95%" stopColor="#10b981" stopOpacity={0.1} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                <XAxis dataKey="month" stroke="#64748b" tick={{ fontSize: 11 }} />
+                <YAxis stroke="#64748b" tickFormatter={(v) => `${v} MAD`} />
+                <Tooltip content={<CustomTooltip />} formatter={(v) => [`${v} MAD`, "Revenue"]} />
+                <Area type="monotone" dataKey="revenue" name="Revenue" stroke="#10b981" fillOpacity={1} fill="url(#colorRevenue)" />
+              </AreaChart>
+            </ResponsiveContainer>
+          ) : <EmptyState message="No monthly revenue data" />}
+        </Paper>
+      </Grid>
+
+      <Grid item xs={12} md={5}>
+        <Paper sx={{ p: 3, borderRadius: 3, height: "100%" }}>
+          <SectionHeader icon={<AttachMoneyIcon />} title="Revenue Summary" subtitle="Key financial metrics" color="#f59e0b" />
+          <Grid container spacing={2} sx={{ mt: 1 }}>
+            <Grid item xs={6}>
+              <Paper sx={{ p: 2, textAlign: "center", bgcolor: "#f0fdf4", borderRadius: 2 }}>
+                <Typography variant="h5" sx={{ fontWeight: 800, color: "#10b981" }}>
+                  {totalRevenue.toFixed(0)} MAD
+                </Typography>
+                <Typography variant="body2" sx={{ color: "#64748b" }}>Total Revenue</Typography>
+              </Paper>
+            </Grid>
+            <Grid item xs={6}>
+              <Paper sx={{ p: 2, textAlign: "center", bgcolor: "#fef3c7", borderRadius: 2 }}>
+                <Typography variant="h5" sx={{ fontWeight: 800, color: "#f59e0b" }}>
+                  {totalOrders}
+                </Typography>
+                <Typography variant="body2" sx={{ color: "#64748b" }}>Total Orders</Typography>
+              </Paper>
+            </Grid>
+            <Grid item xs={12}>
+              <Paper sx={{ p: 2, textAlign: "center", bgcolor: "#ede9fe", borderRadius: 2 }}>
+                <Typography variant="h5" sx={{ fontWeight: 800, color: "#8b5cf6" }}>
+                  {Number(latestAvg).toFixed(2)} MAD
+                </Typography>
+                <Typography variant="body2" sx={{ color: "#64748b" }}>Avg Order Value (Latest Month)</Typography>
+              </Paper>
+            </Grid>
+          </Grid>
+        </Paper>
+      </Grid>
+
+      <Grid item xs={12}>
+        <Paper sx={{ p: 3, borderRadius: 3 }}>
+          <SectionHeader icon={<TrendingUpIcon />} title="Daily Revenue" subtitle="Revenue per day (current month)" color="#6366f1" />
+          {dailyRevenue.length > 0 ? (
+            <ResponsiveContainer width="100%" height={280}>
+              <BarChart data={[...dailyRevenue].reverse()}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                <XAxis dataKey="date" stroke="#64748b" tick={{ fontSize: 11 }} angle={-45} textAnchor="end" height={70} />
+                <YAxis stroke="#64748b" tickFormatter={(v) => `${v} MAD`} />
+                <Tooltip content={<CustomTooltip />} formatter={(v) => [`${v} MAD`, "Revenue"]} />
+                <Bar dataKey="revenue" name="Revenue" radius={[6, 6, 0, 0]}>
+                  {[...dailyRevenue].reverse().map((_, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS.earth[index % COLORS.earth.length]} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          ) : <EmptyState message="No daily revenue data for current month" />}
         </Paper>
       </Grid>
     </Grid>

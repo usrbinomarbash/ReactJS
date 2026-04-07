@@ -12,7 +12,7 @@ import com.petstore.backend.repository.CategoryRepository;
 
 @RestController
 @RequestMapping("/api/categories")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:5173"})
 public class CategoryController {
 
     @Autowired

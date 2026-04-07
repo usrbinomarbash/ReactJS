@@ -311,6 +311,125 @@ public class ReportController {
         return jdbcTemplate.queryForList(sql);
     }
 
+    // ── Frontend chart endpoints ──────────────────────────────────────────────
+
+    @GetMapping("/pets-per-customer")
+    public List<Map<String, Object>> getPetsPerCustomer() {
+        String sql = """
+            SELECT c.full_name AS "customerName", COUNT(p.pet_id) AS "petCount"
+            FROM customer c
+            LEFT JOIN pet p ON c.customer_id = p.customer_id
+            GROUP BY c.customer_id, c.full_name
+            ORDER BY "petCount" DESC
+            """;
+        return jdbcTemplate.queryForList(sql);
+    }
+
+    @GetMapping("/products-per-category")
+    public List<Map<String, Object>> getProductsPerCategory() {
+        String sql = """
+            SELECT c.name AS "categoryName", COUNT(p.product_id) AS "productCount"
+            FROM category c
+            LEFT JOIN product p ON c.category_id = p.category_id
+            GROUP BY c.category_id, c.name
+            ORDER BY "productCount" DESC
+            """;
+        return jdbcTemplate.queryForList(sql);
+    }
+
+    @GetMapping("/orders-per-customer")
+    public List<Map<String, Object>> getOrdersPerCustomer() {
+        String sql = """
+            SELECT c.full_name AS "customerName", COUNT(o.order_id) AS "orderCount"
+            FROM customer c
+            LEFT JOIN orders o ON c.customer_id = o.customer_id
+            GROUP BY c.customer_id, c.full_name
+            ORDER BY "orderCount" DESC
+            """;
+        return jdbcTemplate.queryForList(sql);
+    }
+
+    @GetMapping("/price-per-customer")
+    public List<Map<String, Object>> getPricePerCustomer() {
+        String sql = """
+            SELECT c.full_name AS "customerName", COALESCE(SUM(o.total), 0) AS "totalSpent"
+            FROM customer c
+            LEFT JOIN orders o ON c.customer_id = o.customer_id
+            GROUP BY c.customer_id, c.full_name
+            ORDER BY "totalSpent" DESC
+            """;
+        return jdbcTemplate.queryForList(sql);
+    }
+
+    @GetMapping("/pets-with-owners")
+    public List<Map<String, Object>> getPetsWithOwners() {
+        String sql = """
+            SELECT p.pet_id AS "petId", p.name, p.species, p.breed,
+                   c.full_name AS "ownerName"
+            FROM pet p
+            JOIN customer c ON p.customer_id = c.customer_id
+            ORDER BY p.pet_id
+            """;
+        return jdbcTemplate.queryForList(sql);
+    }
+
+    @GetMapping("/product-catalog")
+    public List<Map<String, Object>> getProductCatalog() {
+        String sql = """
+            SELECT p.product_id AS "productId", p.name, p.price,
+                   p.stock_quantity AS "stockQuantity",
+                   c.name AS "categoryName", v.name AS "vendorName"
+            FROM product p
+            LEFT JOIN category c ON p.category_id = c.category_id
+            LEFT JOIN vendor v ON p.vendor_id = v.vendor_id
+            ORDER BY p.product_id
+            """;
+        return jdbcTemplate.queryForList(sql);
+    }
+
+    @GetMapping("/top-selling-products")
+    public List<Map<String, Object>> getTopSellingProducts2(
+            @RequestParam(defaultValue = "10") int limit) {
+        String sql = """
+            SELECT p.name, COALESCE(SUM(oi.quantity), 0) AS "totalQuantity"
+            FROM product p
+            LEFT JOIN order_item oi ON p.product_id = oi.product_id
+            GROUP BY p.product_id, p.name
+            ORDER BY "totalQuantity" DESC
+            LIMIT ?
+            """;
+        return jdbcTemplate.queryForList(sql, limit);
+    }
+
+    @GetMapping("/products-per-vendor")
+    public List<Map<String, Object>> getProductsPerVendor() {
+        String sql = """
+            SELECT v.name AS "vendorName", COUNT(p.product_id) AS "productCount"
+            FROM vendor v
+            LEFT JOIN product p ON v.vendor_id = p.vendor_id
+            GROUP BY v.vendor_id, v.name
+            ORDER BY "productCount" DESC
+            """;
+        return jdbcTemplate.queryForList(sql);
+    }
+
+    @GetMapping("/booking-details")
+    public List<Map<String, Object>> getBookingDetails() {
+        String sql = """
+            SELECT b.booking_id AS "bookingId", b.date,
+                   c.full_name AS "customerName",
+                   p.name AS "petName",
+                   b.service_type AS "serviceName",
+                   e.name AS "employeeName"
+            FROM booking b
+            JOIN customer c ON b.customer_id = c.customer_id
+            JOIN pet p ON b.pet_id = p.pet_id
+            LEFT JOIN employee e ON b.employee_id = e.employee_id
+            ORDER BY b.date DESC
+            """;
+        return jdbcTemplate.queryForList(sql);
+    }
+
     // Vendor performance
     @GetMapping("/vendor-performance")
     public List<Map<String, Object>> getVendorPerformance() {
