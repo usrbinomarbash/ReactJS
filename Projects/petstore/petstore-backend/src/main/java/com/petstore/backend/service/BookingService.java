@@ -24,13 +24,16 @@ public class BookingService {
     private final BookingRepository bookingRepository;
     private final CustomerRepository customerRepository;
     private final PetRepository petRepository;
+    private final EmailService emailService;
 
     public BookingService(BookingRepository bookingRepository,
                           CustomerRepository customerRepository,
-                          PetRepository petRepository) {
+                          PetRepository petRepository,
+                          EmailService emailService) {
         this.bookingRepository = bookingRepository;
         this.customerRepository = customerRepository;
         this.petRepository = petRepository;
+        this.emailService = emailService;
     }
 
     public List<Booking> getAllBookings() {
@@ -72,7 +75,15 @@ public class BookingService {
 
         Booking saved = bookingRepository.save(booking);
         log.info("Booking created successfully with ID: {}", saved.getBookingId());
-        
+
+        emailService.sendBookingConfirmation(
+            customer.getEmail(),
+            customer.getFullName(),
+            bookingDate,
+            req.getServiceType(),
+            pet.getName()
+        );
+
         return saved;
     }
 

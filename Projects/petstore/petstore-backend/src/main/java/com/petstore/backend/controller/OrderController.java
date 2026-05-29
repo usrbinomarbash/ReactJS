@@ -10,7 +10,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import com.petstore.backend.model.Order;
+import com.petstore.backend.repository.CustomerRepository;
 import com.petstore.backend.repository.OrderRepository;
+import com.petstore.backend.service.EmailService;
 
 @RestController
 @RequestMapping("/api/orders")
@@ -22,6 +24,12 @@ public class OrderController {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private CustomerRepository customerRepository;
+
+    @Autowired
+    private EmailService emailService;
 
     // GET all orders
     @GetMapping
@@ -139,6 +147,19 @@ public class OrderController {
     public ResponseEntity<Order> createOrder(@RequestBody Order order) {
         System.out.println("POST /api/orders called");
         Order savedOrder = orderRepository.save(order);
+
+        if (savedOrder.getCustomerId() != null) {
+            customerRepository.findById(savedOrder.getCustomerId()).ifPresent(customer ->
+                emailService.sendOrderConfirmation(
+                    customer.getEmail(),
+                    customer.getFullName(),
+                    savedOrder.getOrderId(),
+                    savedOrder.getTotal(),
+                    savedOrder.getPaymentMethod()
+                )
+            );
+        }
+
         return ResponseEntity.status(HttpStatus.CREATED).body(savedOrder);
     }
 

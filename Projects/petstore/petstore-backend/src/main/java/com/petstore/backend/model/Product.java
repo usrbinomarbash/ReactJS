@@ -23,26 +23,32 @@ public class Product {
     @Column(name = "category", length = 50)
     private String category;
 
-    @Column(name="category_id")
+    @Column(name = "category_id")
     private Long categoryId;
 
-    @Column(name="vendor_id")
+    @Column(name = "vendor_id")
     private Long vendorId;
 
     @Positive(message = "Price must be greater than 0")
     @Column(name = "price", nullable = false)
     private double price;
 
-    @PositiveOrZero(message="Stock quantity cannot be negative")
-    @Column(name="stock_quantity")
+    @PositiveOrZero(message = "Stock quantity cannot be negative")
+    @Column(name = "stock_quantity")
     private Integer stockQuantity;
 
     @Size(max = 500, message = "Description cannot exceed 500 characters")
     @Column(name = "description", length = 500)
     private String description;
 
+    // NEW: stores the URL returned by POST /api/upload
+    // e.g. "http://localhost:3388/api/uploads/abc123.jpg"
+    // Nullable — products without a photo simply show a placeholder on the frontend.
+    @Column(name = "image_url", length = 512)
+    private String imageUrl;
+
     // ========== CONSTRUCTORS ==========
-    
+
     public Product() {
     }
 
@@ -54,7 +60,7 @@ public class Product {
     }
 
     // ========== GETTERS ==========
-    
+
     public Long getProductId() {
         return product_id;
     }
@@ -67,7 +73,11 @@ public class Product {
         return category;
     }
 
-    public Long getVendorId(){
+    public Long getCategoryId() {
+        return categoryId;
+    }
+
+    public Long getVendorId() {
         return vendorId;
     }
 
@@ -79,12 +89,16 @@ public class Product {
         return description;
     }
 
-    public Integer getStockQuantity(){
+    public Integer getStockQuantity() {
         return stockQuantity;
     }
 
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
     // ========== SETTERS ==========
-    
+
     public void setProductId(Long product_id) {
         this.product_id = product_id;
     }
@@ -97,8 +111,8 @@ public class Product {
         this.category = category;
     }
 
-    public void setCategoryId(Long categoryId){
-        this.categoryId=categoryId;
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
     }
 
     public void setPrice(double price) {
@@ -109,16 +123,20 @@ public class Product {
         this.description = description;
     }
 
-    public void setVendorId(Long vendorId){
-        this.vendorId=vendorId;
+    public void setVendorId(Long vendorId) {
+        this.vendorId = vendorId;
     }
 
-    public void setStockQuantity(Integer stockQuantity){
-        this.stockQuantity=stockQuantity;
+    public void setStockQuantity(Integer stockQuantity) {
+        this.stockQuantity = stockQuantity;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     // ========== EQUALS, HASHCODE, TOSTRING ==========
-    
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -139,7 +157,7 @@ public class Product {
                 ", name='" + name + '\'' +
                 ", category='" + category + '\'' +
                 ", price=" + price +
-                ", description='" + description + '\'' +
+                ", imageUrl='" + imageUrl + '\'' +
                 '}';
     }
 }
